@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import MasonryGallery from './components/MasonryGallery';
 import ProgressBar from './components/ProgressBar';
-import { itaryPhotos, familyPhotos } from './data/photos';
-
-const SECTIONS = [
-  { id: 'itary', label: 'itary' },
-  { id: 'family', label: 'family' },
-];
+import { sections } from './data/photos';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -26,7 +21,7 @@ function App() {
       <aside className="hidden md:flex flex-col w-48 min-h-screen border-r border-gray-100 bg-white py-12 px-4 fixed left-0 top-0 z-30">
         <nav>
           <ul className="space-y-4">
-            {SECTIONS.map(section => (
+            {sections.map(section => (
               <li key={section.id}>
                 <button
                   className="text-lg font-light text-gray-700 hover:text-black transition"
@@ -63,7 +58,7 @@ function App() {
           </div>
           <nav className="py-4 px-6">
             <ul className="space-y-6">
-              {SECTIONS.map(section => (
+              {sections.map(section => (
                 <li key={section.id}>
                   <button
                     className="text-xl font-light text-gray-700 hover:text-black transition"
@@ -84,13 +79,12 @@ function App() {
             Photo Gallery
           </h1>
         </header>
-        {/* 各セクションにidを付与してページ内リンク対応 */}
-        <section id="itary">
-          <MasonryGallery itaryPhotos={itaryPhotos} familyPhotos={[]} />
-        </section>
-        <section id="family">
-          <MasonryGallery itaryPhotos={[]} familyPhotos={familyPhotos} />
-        </section>
+        {/* 各セクションを自動生成 */}
+        {sections.map(section => (
+          <section id={section.id} key={section.id}>
+            <MasonryGallery photos={section.photos} title={section.label} />
+          </section>
+        ))}
         <ProgressBar />
       </div>
     </div>
