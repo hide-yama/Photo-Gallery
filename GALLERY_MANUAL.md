@@ -138,7 +138,7 @@
 1. **FTPクライアントのインストール**:
    - [FileZilla](https://filezilla-project.org/)
    - [Cyberduck](https://cyberduck.io/)
-   - [WinSCP](https://winscp.net/) （Windows専用）
+   - [WinSCP](https://winscp.net/)（Windows専用）
 
 2. **接続設定**:
    - ホスト: `ftp.yourserver.com`（サーバー情報に合わせて変更）
