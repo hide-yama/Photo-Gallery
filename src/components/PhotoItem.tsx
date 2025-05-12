@@ -41,10 +41,10 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ photo, onClick }) => {
 
   return (
     <div 
-      className="overflow-hidden cursor-pointer transition-transform duration-300 hover:opacity-95 mb-2"
+      className="overflow-hidden cursor-pointer transition-transform duration-300 mb-2"
       onClick={onClick}
     >
-      <div ref={imgRef} className="relative">
+      <div ref={imgRef} className="relative group">
         {isInView && (
           <img
             src={photo.src}
@@ -61,6 +61,10 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ photo, onClick }) => {
         {!isLoaded && (
           <div className="absolute inset-0 bg-gray-100 animate-pulse" />
         )}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="absolute inset-0 bg-white bg-opacity-60" />
+          <span className="relative z-10 text-base md:text-lg font-normal text-gray-800 drop-shadow text-center px-2">{photo.title}</span>
+        </div>
       </div>
     </div>
   );
