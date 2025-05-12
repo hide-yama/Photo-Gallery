@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# 画像ファイル（Git管理外）
+public/images/
