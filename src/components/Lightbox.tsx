@@ -46,20 +46,35 @@ const Lightbox: React.FC<LightboxProps> = ({ photo, onClose, onPrevious, onNext 
         <X size={24} />
       </button>
 
+      <button
+        className="hidden md:block fixed left-4 top-1/2 -translate-y-1/2 z-50 text-gray-500 p-3 hover:bg-gray-100 rounded-full transition-colors duration-300"
+        onClick={onPrevious}
+        aria-label="Previous photo (PC)"
+      >
+        <ChevronLeft size={40} />
+      </button>
+      <button
+        className="hidden md:block fixed right-4 top-1/2 -translate-y-1/2 z-50 text-gray-500 p-3 hover:bg-gray-100 rounded-full transition-colors duration-300"
+        onClick={onNext}
+        aria-label="Next photo (PC)"
+      >
+        <ChevronRight size={40} />
+      </button>
+
       <div className="flex w-full max-h-screen p-4 md:p-16 flex-col md:flex-row">
         <div className="w-full md:w-[60%] flex items-center justify-center mb-4 md:mb-0 relative">
           <div className="relative w-full mt-12 md:mt-0" style={{ aspectRatio: '3/2' }}>
             <button
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 text-gray-500 p-2 hover:bg-gray-100 rounded-full transition-colors duration-300"
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 text-gray-500 p-2 hover:bg-gray-100 rounded-full transition-colors duration-300 md:hidden"
               onClick={onPrevious}
-              aria-label="Previous photo"
+              aria-label="Previous photo (mobile)"
             >
               <ChevronLeft size={32} />
             </button>
             <button
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 text-gray-500 p-2 hover:bg-gray-100 rounded-full transition-colors duration-300"
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 text-gray-500 p-2 hover:bg-gray-100 rounded-full transition-colors duration-300 md:hidden"
               onClick={onNext}
-              aria-label="Next photo"
+              aria-label="Next photo (mobile)"
             >
               <ChevronRight size={32} />
             </button>
