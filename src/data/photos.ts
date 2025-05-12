@@ -49,16 +49,23 @@ export const familyPhotos: Photo[] = [
   { id: 'family-18', src: 'images/family/P1039967.JPG', fullSrc: 'images/family/P1039967.JPG', alt: 'P1039967', width: 600, height: 400, title: 'family', description: 'familyフォルダの画像' },
 ];
 
+// セクション情報を一元管理
+export const sections = [
+  { id: 'itary', label: 'Italy', photos: itaryPhotos },
+  { id: 'family', label: 'Family', photos: familyPhotos },
+  // 新しいセクションを追加する場合はここに追記
+];
+
 export const generateMorePhotos = (startIndex: number, count: number): Photo[] => {
   const morePhotos: Photo[] = [];
-  
+  // sections配列の全photosをまとめて取得
+  const allPhotos = sections.flatMap(section => section.photos);
   for (let i = 0; i < count; i++) {
-    const originalPhoto = photos[(startIndex + i) % photos.length];
+    const originalPhoto = allPhotos[(startIndex + i) % allPhotos.length];
     morePhotos.push({
       ...originalPhoto,
       id: `more-${startIndex + i}`
     });
   }
-  
   return morePhotos;
 };

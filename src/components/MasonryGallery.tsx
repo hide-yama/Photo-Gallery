@@ -4,19 +4,20 @@ import PhotoItem from './PhotoItem';
 import Lightbox from './Lightbox';
 
 interface MasonryGalleryProps {
-  itaryPhotos: Photo[];
-  familyPhotos: Photo[];
+  photos: Photo[];
+  title: string;
 }
 
-const MasonryGallery: React.FC<MasonryGalleryProps> = ({ itaryPhotos, familyPhotos }) => {
+const MasonryGallery: React.FC<MasonryGalleryProps> = ({ photos, title }) => {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
-  const [currentSection, setCurrentSection] = useState<'itary' | 'family' | null>(null);
-  const allPhotos = [...itaryPhotos, ...familyPhotos];
   const [isLoading] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadingRef = useRef<HTMLDivElement>(null);
-  const [itaryShowAll, setItaryShowAll] = useState(false);
-  const [familyShowAll, setFamilyShowAll] = useState(false);
+  const [showAll, setShowAll] = useState(false);
+
+  if (photos.length === 0) {
+    return null;
+  }
 
   useEffect(() => {
     const handleResize = () => {};
@@ -42,43 +43,35 @@ const MasonryGallery: React.FC<MasonryGalleryProps> = ({ itaryPhotos, familyPhot
         observerRef.current.disconnect();
       }
     };
-  }, [isLoading, allPhotos.length]);
+  }, [isLoading, photos.length]);
 
   const handlePhotoClick = (photo: Photo) => {
-    // const index = allPhotos.findIndex(p => p.id === photo.id); // 未使用
     setSelectedPhoto(photo);
-    setCurrentSection(photo.title === 'itary' ? 'itary' : 'family');
   };
 
   const handlePrevious = () => {
-    const sectionPhotos = currentSection === 'itary' ? itaryPhotos : familyPhotos;
-    const index = sectionPhotos.findIndex(p => p.id === selectedPhoto?.id);
-    const newIndex = (index - 1 + sectionPhotos.length) % sectionPhotos.length;
-    setSelectedPhoto(sectionPhotos[newIndex]);
+    const index = photos.findIndex(p => p.id === selectedPhoto?.id);
+    const newIndex = (index - 1 + photos.length) % photos.length;
+    setSelectedPhoto(photos[newIndex]);
   };
 
   const handleNext = () => {
-    const sectionPhotos = currentSection === 'itary' ? itaryPhotos : familyPhotos;
-    const index = sectionPhotos.findIndex(p => p.id === selectedPhoto?.id);
-    const newIndex = (index + 1) % sectionPhotos.length;
-    setSelectedPhoto(sectionPhotos[newIndex]);
+    const index = photos.findIndex(p => p.id === selectedPhoto?.id);
+    const newIndex = (index + 1) % photos.length;
+    setSelectedPhoto(photos[newIndex]);
   };
 
   const handleCloseLightbox = () => {
     setSelectedPhoto(null);
-    setCurrentSection(null);
   };
 
   const getVisiblePhotosByHeight = (photos: Photo[], showAll: boolean, maxHeightVW: number) => {
     if (showAll) return photos;
-    // 仮実装: 画像1枚の高さを200px相当（vw換算）とし、maxHeightVW分だけ表示
-    // 実際は画像の高さを取得して合計するのが理想だが、ここでは概算
     const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) / 100;
     const maxHeightPx = vw * maxHeightVW;
     let sum = 0;
     const result: Photo[] = [];
     for (let i = 0; i < photos.length; i++) {
-      // 仮: 画像の高さを200pxで計算（実際はphoto.height/photo.widthで計算も可）
       const h = 200;
       if (sum + h > maxHeightPx) break;
       sum += h;
@@ -87,13 +80,14 @@ const MasonryGallery: React.FC<MasonryGalleryProps> = ({ itaryPhotos, familyPhot
     return result;
   };
 
-  const renderSection = (title: string, photos: Photo[], showAll: boolean, setShowAll: (v: boolean) => void) => {
-    // 画面幅でmaxHeightVWを切り替え
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-    const maxHeightVW = isMobile ? 300 : 180;
-    const visiblePhotos = getVisiblePhotosByHeight(photos, showAll, maxHeightVW);
-    const columnsClass = 'columns-3 md:columns-3 lg:columns-5 xl:columns-6 2xl:columns-6';
-    return (
+  // 画面幅でmaxHeightVWを切り替え
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  const maxHeightVW = isMobile ? 300 : 180;
+  const visiblePhotos = getVisiblePhotosByHeight(photos, showAll, maxHeightVW);
+  const columnsClass = 'columns-3 md:columns-3 lg:columns-5 xl:columns-6 2xl:columns-6';
+
+  return (
+    <div className="w-full max-w-[1920px] mx-auto px-4 pt-16 pb-8">
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6 text-gray-700">{title}</h2>
         <ul className={`${columnsClass} gap-4 space-y-4 ${!showAll ? `max-h-[${maxHeightVW}vw] overflow-hidden` : ''}`}>
@@ -123,20 +117,11 @@ const MasonryGallery: React.FC<MasonryGalleryProps> = ({ itaryPhotos, familyPhot
           </button>
         )}
       </section>
-    );
-  };
-
-  return (
-    <div className="w-full max-w-[1920px] mx-auto px-4 pt-16 pb-8">
-      {renderSection('itary', itaryPhotos, itaryShowAll, setItaryShowAll)}
-      {renderSection('family', familyPhotos, familyShowAll, setFamilyShowAll)}
-      
       <div ref={loadingRef} className="h-10 w-full flex justify-center items-center mt-8 mb-4">
         {isLoading && (
           <div className="w-2 h-2 bg-gray-300 rounded-full animate-ping"></div>
         )}
       </div>
-      
       {selectedPhoto && (
         <Lightbox
           photo={selectedPhoto}
